@@ -23,7 +23,14 @@ class TestCreateCourier:
             f'{Url.URL}{Handle.CREATE_COURIER}',
             TestCreateCourier.data)
         assert response.status_code == 409 and 'Этот логин уже используется' in response.text 
+        courier_id = response.json().get('id')
+        delete_response = requests.delete(
+            f'{Url.URL}{Handle.DELETE_COURIER}',
+            json={'id': courier_id}
+        )
+        assert delete_response.status_code == 200
         
+        assert delete_response.status_code == 200, "Ожидаемый статус-код 200 для успешного удаления"
     @allure.title('Проверка, что нельзя создать курьера без логина')
     def test_courier_without_login_creation(self):
         response = requests.post(
